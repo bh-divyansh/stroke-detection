@@ -114,7 +114,7 @@ def run():
         predictions = model.predict(input_scaled)
         
         print('Prediction: ', predictions)
-        prediction = 1 if predictions[0][0] > 0.5 else 0
+        prediction = 1 if predictions[0][0] > 0.1 else 0
 
         # st.write("Predicted Stroke Category:", prediction)
         st.subheader("Possibility of Stroke")
