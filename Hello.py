@@ -15,6 +15,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import sklearn
 from sklearn.preprocessing import RobustScaler
 import pickle
 import tensorflow as tf
@@ -22,14 +23,12 @@ from streamlit.logger import get_logger
 
 LOGGER = get_logger(__name__)
 
-
 def run():
     st.title("Stroke Prediction Project")
     st.subheader("Add Patient Details")
 
     col1, col2 = st.columns(2)
 
-    # Input fields in the first column
     with col1:
         gender = st.selectbox("Gender", ["Female", "Male"])
         age = st.number_input("Age", min_value=0.0, format="%.2f")
@@ -37,7 +36,6 @@ def run():
         heart_disease = st.selectbox("Heart Disease", ["No", "Yes"])
         ever_married = st.selectbox("Ever Married", ["No", "Yes"])
 
-    # Input fields in the second column
     with col2:
         avg_glucose_level = st.number_input(
             "Average Glucose Level", min_value=0.0, format="%.2f")
@@ -48,7 +46,6 @@ def run():
             "Smoking Status", ["Unknown", "Formerly Smoked", "Never Smoked", "Smokes"])
         residence_type = st.selectbox("Residence Type", ["Rural", "Urban"])
 
-    # Now, you have organized the input fields into two columns without a separate sidebar
     gender = 1 if gender == "Male" else 0
     hypertension = 1 if hypertension == "Yes" else 0
     heart_disease = 1 if heart_disease == "Yes" else 0
@@ -77,12 +74,11 @@ def run():
     s_s_encoded[s_s_mapping[smoking_status]] = 1
 
     patient_details = np.array([gender, age, hypertension, heart_disease,
-                              ever_married, residence_type, avg_glucose_level, bmi])
+                            ever_married, residence_type, avg_glucose_level, bmi])
     patient_details = np.concatenate(
         (patient_details, work_type_encoded, s_s_encoded))
 
     if st.button("Predict Stroke"):
-        # Create a DataFrame from the input values
         input_data = {
             "gender": [gender],
             "age": [age],
@@ -103,8 +99,7 @@ def run():
             "s_s_smokes": [s_s_encoded[3]]
         }
         input_df = pd.DataFrame(input_data)
-        st.write('Given Input data: ')
-        st.write(input_df)
+        
         scaler_path = "scalerfile.pickle"
         with open(scaler_path, 'rb') as scaler_file:
             scaler = pickle.load(scaler_file)
@@ -117,16 +112,17 @@ def run():
             input_scaled.shape[0], input_scaled.shape[1], 1)
 
         predictions = model.predict(input_scaled)
-        # prediction = (predictions > 0.5).astype(int)
+        
         print('Prediction: ', predictions)
-        prediction = 1 if predictions[0][0] > 0.1 else 0
+        prediction = 1 if predictions[0][0] > 0.5 else 0
 
-        st.write("Predicted Stroke Category:", prediction)
-        st.subheader("Probability of Stroke")
+        # st.write("Predicted Stroke Category:", prediction)
+        st.subheader("Possibility of Stroke")
         if prediction == 1:
-            st.error("HIGH PROBABILITY OF STROKE 💀")
+            st.error("POSSIBILITY OF STROKE ☹️")
         else:
             st.success("OUT OF DANGER 😀")
+
 
 if __name__ == "__main__":
     run()
