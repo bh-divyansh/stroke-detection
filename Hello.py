@@ -115,9 +115,10 @@ def run():
         
         print('Prediction: ', predictions)
         prediction = 1 if predictions[0][0] > 0.1 else 0
-
+        
         # st.write("Predicted Stroke Category:", prediction)
         st.subheader("Possibility of Stroke")
+        st.progress(predictions[0][0]/2*10)
         if prediction == 1:
             st.error("POSSIBILITY OF STROKE ☹️")
         else:
