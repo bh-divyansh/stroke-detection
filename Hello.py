@@ -106,10 +106,9 @@ def run():
 
         input_scaled = scaler.transform(input_df)
 
-        model_path = "GRU_Robust_SMOTE_modelfile.h5"
-        model = tf.keras.models.load_model(model_path)
-        input_scaled = input_scaled.reshape(
-            input_scaled.shape[0], input_scaled.shape[1], 1)
+        model_path = "LR_GridSearched_Standard_SMOTE_modelfile.pickle"
+        with open(model_path, 'rb') as file:
+            model = pickle.load(file)
 
         predictions = model.predict(input_scaled)
         
