@@ -118,7 +118,7 @@ def run():
         
         # st.write("Predicted Stroke Category:", prediction)
         st.subheader("Possibility of Stroke")
-        st.progress(predictions[0][0]/2*10)
+        # st.progress(predictions[0][0]/2*10)
         if prediction == 1:
             st.error("POSSIBILITY OF STROKE ☹️")
         else:
